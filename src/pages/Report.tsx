@@ -1,25 +1,21 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
-import { IonAlert, IonButton } from '@ionic/react';
+import PageHeader from '../components/common/PageHeader';
 
-const Tab4: React.FC = () => {
+const Report: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 4</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Reportar" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 4</IonTitle>
+            <IonTitle size="large">Tab 3</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Tab 4 page" />
+        <ExploreContainer name="Tab 3 page" />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Tab4;
+export default Report;

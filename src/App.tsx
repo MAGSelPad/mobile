@@ -11,10 +11,10 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { homeOutline, mapOutline, addCircleOutline, personOutline } from 'ionicons/icons';
-import Tab1 from './pages/Home';
-import Tab2 from './pages/Mapa';
-import Tab3 from './pages/Reportar';
-import Tab4 from './pages/Perfil'
+import Home from './pages/Home';
+import Map from './pages/Map';
+import Report from './pages/Report';
+import Profile from './pages/Profile'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -53,36 +53,36 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
+          <Route exact path="/home">
+            <Home />
           </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
+          <Route exact path="/map">
+            <Map />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
+          <Route path="/report">
+            <Report />
           </Route>
-          <Route path="/tab4">
-            <Tab4 />
+          <Route path="/profile">
+            <Profile />
           </Route>
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            <Redirect to="/home" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="tab1" href="/home">
             <IonIcon aria-hidden="true" icon={homeOutline} />
             <IonLabel>Inicio</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="tab2" href="/map">
             <IonIcon aria-hidden="true" icon={mapOutline} />
             <IonLabel>Mapa</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="tab3" href="/report">
             <IonIcon aria-hidden="true" icon={addCircleOutline} />
             <IonLabel>Reportar</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab4" href="/tab4">
+          <IonTabButton tab="tab4" href="/profile">
             <IonIcon aria-hidden="true" icon={personOutline} />
             <IonLabel>Perfil</IonLabel>
           </IonTabButton>

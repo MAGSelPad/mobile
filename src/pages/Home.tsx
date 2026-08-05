@@ -1,26 +1,38 @@
+import { useState } from "react";
+
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import { IonAlert, IonButton } from '@ionic/react';
 
-const Tab1: React.FC = () => {
+import PageHeader from '../components/common/PageHeader';
+import SearchBar from "../components/common/SearchBar";
+import SectionTitle from "../components/common/SectionTitle";
+
+import QuickActions from "../components/home/QuickActions";
+import NearbyPlaces from "../components/home/NearbyPlaces";
+
+const Home: React.FC = () => {
+  const [search, setSearch] = useState("");
+
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <PageHeader title="Inicio" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 1</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <SearchBar value={search} onSearch={setSearch} />
+        <SectionTitle title="Acciones rápidas" />
+        <QuickActions />
+        <SectionTitle title="Lugares cercanos" />
+        <NearbyPlaces />
         <ExploreContainer name="Tab 1 page" />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Tab1;
+export default Home;
 
