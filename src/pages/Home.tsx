@@ -28,7 +28,7 @@ const Home: React.FC = () => {
         <QuickActions />
         <SectionTitle title="Lugares cercanos" />
         <NearbyPlaces />
-        <ExploreContainer name="Tab 1 page" />
+        {/*<ExploreContainer name="Tab 1 page" />*/}
       </IonContent>
     </IonPage>
   );
