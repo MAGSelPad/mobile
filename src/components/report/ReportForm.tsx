@@ -1,11 +1,4 @@
-import {
-  IonButton,
-  IonItem,
-  IonLabel,
-  IonSelect,
-  IonSelectOption,
-  IonTextarea,
-} from "@ionic/react";
+import { IonButton, IonItem, IonLabel, IonSelect, IonSelectOption, IonTextarea, } from "@ionic/react";
 
 import { Place } from "../../types/Place";
 
@@ -43,29 +36,24 @@ const ReportForm = ({
     <>
       <IonItem>
         <IonLabel>Lugar</IonLabel>
-
         <IonSelect
           value={placeId ?? undefined}
           placeholder="Seleccionar lugar"
           onIonChange={(event) =>
-            onPlaceChange(Number(event.detail.value))
+            onPlaceChange(
+              Number(event.detail.value)
+            )
           }
         >
           {places.map((place) => (
-            <IonSelectOption
-              key={place.id}
-              value={place.id}
-            >
+            <IonSelectOption key={place.id} value={place.id}>
               {place.name}
             </IonSelectOption>
           ))}
         </IonSelect>
       </IonItem>
 
-      <ReportTypeSelect
-        value={type}
-        onChange={onTypeChange}
-      />
+      <ReportTypeSelect value={type} onChange={onTypeChange} />
 
       <IonItem>
         <IonLabel position="stacked">
@@ -85,10 +73,7 @@ const ReportForm = ({
         />
       </IonItem>
 
-      <ReportImage
-        image={image}
-        onImageChange={onImageChange}
-      />
+      <ReportImage image={image} onImageChange={onImageChange} />
 
       <IonButton
         expand="block"

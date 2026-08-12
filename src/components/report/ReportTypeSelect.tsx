@@ -1,9 +1,4 @@
-import {
-    IonItem,
-    IonLabel,
-    IonSelect,
-    IonSelectOption,
-} from "@ionic/react";
+import { IonItem, IonLabel, IonSelect, IonSelectOption, } from "@ionic/react";
 
 interface Props {
     value: string;
@@ -33,10 +28,7 @@ const ReportTypeSelect = ({ value, onChange }: Props) => {
                 }
             >
                 {reportTypes.map((type) => (
-                    <IonSelectOption
-                        key={type}
-                        value={type}
-                    >
+                    <IonSelectOption key={type} value={type}>
                         {type}
                     </IonSelectOption>
                 ))}

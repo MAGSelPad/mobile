@@ -1,9 +1,4 @@
-import {
-    IonButton,
-    IonIcon,
-    IonImg,
-    IonText,
-} from "@ionic/react";
+import { IonButton, IonIcon, IonImg, IonText, } from "@ionic/react";
 
 import { cameraOutline, trashOutline } from "ionicons/icons";
 
@@ -53,11 +48,7 @@ const ReportImage = ({
                     fill="outline"
                     onClick={takePhoto}
                 >
-                    <IonIcon
-                        icon={cameraOutline}
-                        slot="start"
-                    />
-
+                    <IonIcon icon={cameraOutline} slot="start" />
                     Añadir fotografía
                 </IonButton>
             ) : (
@@ -73,11 +64,7 @@ const ReportImage = ({
                         color="danger"
                         onClick={removePhoto}
                     >
-                        <IonIcon
-                            icon={trashOutline}
-                            slot="start"
-                        />
-
+                        <IonIcon icon={trashOutline} slot="start" />
                         Eliminar fotografía
                     </IonButton>
                 </>

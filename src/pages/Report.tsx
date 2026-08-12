@@ -1,39 +1,50 @@
 import { useState } from "react";
 
-import {
-  IonContent,
-  IonPage,
-  useIonAlert,
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, } from "@ionic/react";
+
+import { addOutline, } from "ionicons/icons";
 
 import PageHeader from "../components/common/PageHeader";
 import SectionTitle from "../components/common/SectionTitle";
+
+import ReportList from "../components/report/ReportList";
 import ReportForm from "../components/report/ReportForm";
 
 import { places } from "../data/places";
+import type { Report } from "../types/Report";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
 
-  const [placeId, setPlaceId] =
-    useState<number | null>(null);
+  const [creatingReport, setCreatingReport] = useState(false);
+
+  const [reports, setReports] = useState<Report[]>([]);
+
+  const [placeId, setPlaceId] = useState<number | null>(null);
 
   const [type, setType] = useState("");
 
-  const [description, setDescription] =
-    useState("");
+  const [description, setDescription] = useState("");
+
+  const [image, setImage] = useState<string | null>(null);
 
   const handleSubmit = () => {
-    const report = {
+
+    if (placeId === null || !type || !description.trim()) {
+      return;
+    }
+
+    const newReport: Report = {
       id: Date.now(),
       placeId,
       type,
       description,
+      image: image ?? undefined,
       status: "Pendiente",
       createdAt: new Date().toISOString(),
     };
 
-    console.log("Nuevo reporte:", report);
+    setReports((currentReports) => [newReport, ...currentReports]);
 
     presentAlert({
       header: "Reporte enviado",
@@ -42,32 +53,89 @@ const Report = () => {
       buttons: ["Aceptar"],
     });
 
+    resetForm();
+
+    setCreatingReport(false);
+  };
+
+  const resetForm = () => {
     setPlaceId(null);
     setType("");
     setDescription("");
+    setImage(null);
+  };
+
+  const handleNewReport = () => {
+    resetForm();
+    setCreatingReport(true);
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    setCreatingReport(false);
   };
 
   return (
     <IonPage>
 
-      <PageHeader title="Reportar incidencia" />
+      {/* <PageHeader title="Mis reportes" /> */}
 
       <IonContent fullscreen>
 
-        <SectionTitle
-          title="Nueva incidencia"
-        />
+        {!creatingReport ? (
+          <>
+            <SectionTitle
+              title="Mis reportes"
+            />
 
-        <ReportForm
-          places={places}
-          placeId={placeId}
-          type={type}
-          description={description}
-          onPlaceChange={setPlaceId}
-          onTypeChange={setType}
-          onDescriptionChange={setDescription}
-          onSubmit={handleSubmit}
-        />
+            <IonButton
+              expand="block"
+              className="ion-margin"
+              onClick={handleNewReport}
+            >
+              <IonIcon
+                icon={addOutline}
+                slot="start"
+              />
+
+              Nuevo reporte
+            </IonButton>
+
+            <ReportList
+              reports={reports}
+              places={places}
+            />
+          </>
+        ) : (
+          <>
+            <SectionTitle
+              title="Nueva incidencia"
+            />
+
+            <ReportForm
+              places={places}
+              placeId={placeId}
+              type={type}
+              description={description}
+              image={image}
+              onPlaceChange={setPlaceId}
+              onTypeChange={setType}
+              onDescriptionChange={
+                setDescription
+              }
+              onImageChange={setImage}
+              onSubmit={handleSubmit}
+            />
+
+            <IonButton
+              expand="block"
+              fill="clear"
+              onClick={handleCancel}
+            >
+              Cancelar
+            </IonButton>
+          </>
+        )}
 
       </IonContent>
 

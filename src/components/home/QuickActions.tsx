@@ -1,15 +1,6 @@
-import {
-    IonGrid,
-    IonRow,
-    IonCol,
-} from "@ionic/react";
+import { IonGrid, IonRow, IonCol, } from "@ionic/react";
 
-import {
-    mapOutline,
-    warningOutline,
-    starOutline,
-    personOutline,
-} from "ionicons/icons";
+import { mapOutline, warningOutline, starOutline, personOutline, } from "ionicons/icons";
 
 import QuickActionCard from "./QuickActionCard";
 
