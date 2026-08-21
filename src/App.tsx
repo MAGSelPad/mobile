@@ -46,9 +46,31 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import { reportService } from './services/reportService';
+import { frequentPlacesService } from './services/frequentPlacesService';
+import { useEffect, useState } from 'react';
+
 setupIonicReact();
 
-const App: React.FC = () => (
+const App: React.FC = () => {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const initServices = async () => {
+      await Promise.all([
+        reportService.init(),
+        frequentPlacesService.init()
+      ]);
+      setIsReady(true);
+    };
+    initServices();
+  }, []);
+
+  if (!isReady) {
+    return <IonApp></IonApp>; // Pantalla en blanco mientras carga (muy rápido localmente)
+  }
+
+  return (
   <IonApp>
     <IonReactRouter>
       <IonTabs>
@@ -90,6 +112,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-);
+  );
+};
 
 export default App;
