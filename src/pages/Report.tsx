@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, } from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter } from "@ionic/react";
 
 import { addOutline, } from "ionicons/icons";
 
@@ -12,6 +12,7 @@ import ReportForm from "../components/report/ReportForm";
 
 import { places } from "../data/places";
 import type { Report } from "../types/Report";
+import { reportService } from "../services/reportService";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
@@ -19,6 +20,10 @@ const Report = () => {
   const [creatingReport, setCreatingReport] = useState(false);
 
   const [reports, setReports] = useState<Report[]>([]);
+
+  useIonViewWillEnter(() => {
+    setReports(reportService.getReports());
+  });
 
   const [placeId, setPlaceId] = useState<number | null>(null);
 
@@ -44,7 +49,8 @@ const Report = () => {
       createdAt: new Date().toISOString(),
     };
 
-    setReports((currentReports) => [newReport, ...currentReports]);
+    reportService.addReport(newReport);
+    setReports(reportService.getReports());
 
     presentAlert({
       header: "Reporte enviado",
