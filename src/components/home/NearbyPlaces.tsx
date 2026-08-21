@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PlaceCard from "./PlaceCard";
 import { places } from "../../data/places";
 import { calculateDistance, getCurrentLocation, DEFAULT_LOCATION } from "../../services/locationService";
+import { frequentPlacesService } from "../../services/frequentPlacesService";
 import { UserLocation } from "../../types/UserLocation";
 import { IonSpinner, IonText } from "@ionic/react";
 
@@ -14,6 +15,10 @@ const NearbyPlaces = () => {
             setLoading(true);
             const location = await getCurrentLocation();
             setUserLocation(location);
+            
+            // Registrar la visita al obtener la ubicación
+            frequentPlacesService.registerVisitFromLocation(location);
+            
             setLoading(false);
         };
         fetchLocation();

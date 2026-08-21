@@ -19,11 +19,7 @@ const QuickActions = () => {
             </IonRow>
 
             <IonRow>
-                <IonCol size="6">
-                    <QuickActionCard title="Favoritos" icon={starOutline} link="/favorites" />
-                </IonCol>
-
-                <IonCol size="6">
+                <IonCol size="12">
                     <QuickActionCard title="Perfil" icon={personOutline} link="/profile" />
                 </IonCol>
             </IonRow>

@@ -2,12 +2,12 @@ import { IonCard, IonCardContent, IonCol, IonGrid, IonRow, } from "@ionic/react"
 
 interface Props {
     reports: number;
-    favorites: number;
+    frequentPlaces: number;
 }
 
 const ProfileStats = ({
     reports,
-    favorites,
+    frequentPlaces,
 }: Props) => {
     return (
         <IonCard>
@@ -23,9 +23,9 @@ const ProfileStats = ({
                         </IonCol>
 
                         <IonCol size="6" className="ion-text-center">
-                            <h2>⭐</h2>
-                            <h2>{favorites}</h2>
-                            <p>Favoritos</p>
+                            <h2>📍</h2>
+                            <h2>{frequentPlaces}</h2>
+                            <p>Lugares frec.</p>
                         </IonCol>
 
                     </IonRow>

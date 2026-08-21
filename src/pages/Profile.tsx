@@ -1,4 +1,5 @@
-import { IonContent, IonPage, } from "@ionic/react";
+import { useState } from "react";
+import { IonContent, IonPage, useIonViewWillEnter } from "@ionic/react";
 
 import PageHeader from "../components/common/PageHeader";
 
@@ -7,18 +8,24 @@ import ProfileStats from "../components/profile/ProfileStats";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import AppInfo from "../components/profile/AppInfo";
 
+import { frequentPlacesService } from "../services/frequentPlacesService";
+import { reportService } from "../services/reportService";
+
 const Profile = () => {
+  const [stats, setStats] = useState({ reports: 0, frequentPlaces: 0 });
+
+  useIonViewWillEnter(() => {
+    setStats({
+      reports: reportService.getReports().length,
+      frequentPlaces: frequentPlacesService.getTotalFrequentPlaces(),
+    });
+  });
 
   const user = {
     name: "Miguel Galarza",
     university: "ESPOL",
     email: "usuario@espol.edu.ec",
     image: undefined,
-  };
-
-  const statistics = {
-    reports: 3,
-    favorites: 5,
   };
 
   return (
@@ -35,8 +42,8 @@ const Profile = () => {
         />
 
         <ProfileStats
-          reports={statistics.reports}
-          favorites={statistics.favorites}
+          reports={stats.reports}
+          frequentPlaces={stats.frequentPlaces}
         />
 
         <ProfileInfo

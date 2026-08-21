@@ -10,6 +10,7 @@ import SectionTitle from "../components/common/SectionTitle";
 
 import QuickActions from "../components/home/QuickActions";
 import NearbyPlaces from "../components/home/NearbyPlaces";
+import FrequentPlaces from "../components/home/FrequentPlaces";
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -24,6 +25,10 @@ const Home: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <SearchBar value={search} onSearch={setSearch} />
+        
+        <SectionTitle title="Lugares frecuentes" />
+        <FrequentPlaces />
+
         <SectionTitle title="Acciones rápidas" />
         <QuickActions />
         <SectionTitle title="Lugares cercanos" />
