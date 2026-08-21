@@ -22,9 +22,9 @@ const Profile = () => {
   });
 
   const user = {
-    name: "Miguel Galarza",
+    name: "Estudiante ESPOL",
     university: "ESPOL",
-    email: "usuario@espol.edu.ec",
+    email: "estudiante@espol.edu.ec",
     image: undefined,
   };
 

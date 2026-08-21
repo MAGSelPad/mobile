@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
 import { IonAlert, IonButton } from '@ionic/react';
 
 import PageHeader from '../components/common/PageHeader';
@@ -21,7 +20,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
+            <IonTitle size="large">Inicio</IonTitle>
           </IonToolbar>
         </IonHeader>
         <SearchBar value={search} onSearch={setSearch} />
@@ -33,7 +32,6 @@ const Home: React.FC = () => {
         <QuickActions />
         <SectionTitle title="Lugares cercanos" />
         <NearbyPlaces />
-        {/*<ExploreContainer name="Tab 1 page" />*/}
       </IonContent>
     </IonPage>
   );
