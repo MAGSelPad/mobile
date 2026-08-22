@@ -1,7 +1,5 @@
 import { useState } from "react";
-
 import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter } from "@ionic/react";
-
 import { addOutline, } from "ionicons/icons";
 
 import PageHeader from "../components/common/PageHeader";
@@ -13,28 +11,33 @@ import ReportForm from "../components/report/ReportForm";
 import { places } from "../data/places";
 import type { Report } from "../types/Report";
 import { reportService } from "../services/reportService";
+import { UserLocation } from "../types/UserLocation";
+import { getCurrentLocation } from "../services/locationService";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
 
   const [creatingReport, setCreatingReport] = useState(false);
-
   const [reports, setReports] = useState<Report[]>([]);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
 
   useIonViewWillEnter(() => {
     setReports(reportService.getReports());
+    
+    // Obtain location once when entering the report view
+    const fetchLoc = async () => {
+      const loc = await getCurrentLocation();
+      setUserLocation(loc);
+    };
+    fetchLoc();
   });
 
   const [placeId, setPlaceId] = useState<number | null>(null);
-
   const [type, setType] = useState("");
-
   const [description, setDescription] = useState("");
-
   const [image, setImage] = useState<string | null>(null);
 
   const handleSubmit = () => {
-
     if (placeId === null || !type || !description.trim()) {
       return;
     }
@@ -45,6 +48,7 @@ const Report = () => {
       type,
       description,
       image: image ?? undefined,
+      location: userLocation ?? undefined,
       status: "Pendiente",
       createdAt: new Date().toISOString(),
     };
@@ -54,13 +58,11 @@ const Report = () => {
 
     presentAlert({
       header: "Reporte enviado",
-      message:
-        "Tu reporte ha sido registrado correctamente.",
+      message: "Tu reporte ha sido registrado correctamente.",
       buttons: ["Aceptar"],
     });
 
     resetForm();
-
     setCreatingReport(false);
   };
 
@@ -83,68 +85,44 @@ const Report = () => {
 
   return (
     <IonPage>
-
-      {/* <PageHeader title="Mis reportes" /> */}
-
       <IonContent fullscreen>
-
         {!creatingReport ? (
           <>
-            <SectionTitle
-              title="Mis reportes"
-            />
-
+            <SectionTitle title="Mis reportes" />
             <IonButton
               expand="block"
               className="ion-margin"
               onClick={handleNewReport}
             >
-              <IonIcon
-                icon={addOutline}
-                slot="start"
-              />
-
+              <IonIcon icon={addOutline} slot="start" />
               Nuevo reporte
             </IonButton>
 
-            <ReportList
-              reports={reports}
-              places={places}
-            />
+            <ReportList reports={reports} places={places} />
           </>
         ) : (
           <>
-            <SectionTitle
-              title="Nueva incidencia"
-            />
-
+            <SectionTitle title="Nueva incidencia" />
             <ReportForm
               places={places}
               placeId={placeId}
               type={type}
               description={description}
               image={image}
+              userLocation={userLocation}
               onPlaceChange={setPlaceId}
               onTypeChange={setType}
-              onDescriptionChange={
-                setDescription
-              }
+              onDescriptionChange={setDescription}
               onImageChange={setImage}
               onSubmit={handleSubmit}
             />
 
-            <IonButton
-              expand="block"
-              fill="clear"
-              onClick={handleCancel}
-            >
+            <IonButton expand="block" fill="clear" onClick={handleCancel}>
               Cancelar
             </IonButton>
           </>
         )}
-
       </IonContent>
-
     </IonPage>
   );
 };
