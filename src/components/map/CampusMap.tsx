@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IonCard, IonButton, IonBadge, IonIcon, IonText } from "@ionic/react";
+import { IonCard, IonButton, IonBadge, IonIcon, IonText, useIonViewWillEnter } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -9,6 +9,7 @@ import { places } from "../../data/places";
 import { reportService } from "../../services/reportService";
 import { getCurrentLocation } from "../../services/locationService";
 import { calculateDistance, DEFAULT_LOCATION } from "../../services/locationService";
+import type { Report } from "../../types/Report";
 
 // Fix Leaflet icons in Vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -33,6 +34,11 @@ const MapUpdater = () => {
 const CampusMap = () => {
   const history = useHistory();
   const [userLocation, setUserLocation] = useState<{latitude: number, longitude: number} | null>(null);
+  const [allReports, setAllReports] = useState<Report[]>([]);
+
+  useIonViewWillEnter(() => {
+    setAllReports(reportService.getReports());
+  });
 
   useEffect(() => {
     const fetchLoc = async () => {
@@ -45,10 +51,7 @@ const CampusMap = () => {
   const isGpsAvailable = userLocation && (userLocation.latitude !== DEFAULT_LOCATION.latitude || userLocation.longitude !== DEFAULT_LOCATION.longitude);
 
   const handleCreateReport = (placeId: number) => {
-    history.push({
-      pathname: '/report',
-      state: { preselectedPlaceId: placeId }
-    });
+    history.push(`/report?placeId=${placeId}`);
   };
 
   const getStatusColor = (status: string) => {
@@ -61,7 +64,6 @@ const CampusMap = () => {
   };
 
   const mapCenter: [number, number] = [-2.14620, -79.96580]; // FCNM as center
-  const allReports = reportService.getReports();
 
   return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>

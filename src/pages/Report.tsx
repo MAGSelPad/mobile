@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter } from "@ionic/react";
 import { addOutline, } from "ionicons/icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 import PageHeader from "../components/common/PageHeader";
 import SectionTitle from "../components/common/SectionTitle";
@@ -17,7 +17,8 @@ import { getCurrentLocation } from "../services/locationService";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
-  const location = useLocation<{ preselectedPlaceId?: number }>();
+  const location = useLocation();
+  const history = useHistory();
 
   const [creatingReport, setCreatingReport] = useState(false);
   const [reports, setReports] = useState<Report[]>([]);
@@ -38,15 +39,14 @@ const Report = () => {
     };
     fetchLoc();
 
-    // Check if we navigated here from the map with a pre-selected place
-    if (location.state?.preselectedPlaceId) {
-      setPlaceId(location.state.preselectedPlaceId);
+    // Check if we navigated here with a pre-selected place query param
+    const params = new URLSearchParams(location.search);
+    const pId = params.get('placeId');
+    if (pId) {
+      setPlaceId(parseInt(pId, 10));
       setCreatingReport(true);
-      
-      // Clear the state so it doesn't reopen next time we enter without the button
-      // React router history state replacement is tricky, so we just consume it.
-      // Modifying state requires useHistory, but consuming it is fine.
-      window.history.replaceState({}, '');
+      // Clear the query parameter so it doesn't stick
+      history.replace({ pathname: '/report', search: '' });
     }
   });
 

@@ -63,8 +63,21 @@ const ReportForm = ({
       return groups;
   }, [placesWithDistance]);
 
+  const selectedPlace = useMemo(() => places.find(p => p.id === placeId), [places, placeId]);
+
   return (
     <>
+      {selectedPlace && (
+        <IonItem lines="none" style={{ '--background': 'var(--ion-color-light)', borderRadius: '8px', margin: '16px 16px 0 16px' }}>
+          <IonIcon icon={checkmarkCircle} slot="start" color="primary" />
+          <IonLabel>
+            <p>Lugar de la incidencia</p>
+            <h2>{selectedPlace.name}</h2>
+            {selectedPlace.faculty && selectedPlace.faculty !== 'Desconocida' && <p>{selectedPlace.faculty}</p>}
+          </IonLabel>
+        </IonItem>
+      )}
+
       {!showAllPlaces ? (
         <>
           <IonListHeader>📍 {isGpsAvailable ? 'Lugares cercanos' : 'Lugares recomendados'}</IonListHeader>
