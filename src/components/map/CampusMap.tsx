@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { IonCard, IonButton, IonBadge, IonIcon, IonText } from "@ionic/react";
 import { useHistory } from "react-router-dom";
-import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { locationOutline, alertCircleOutline } from 'ionicons/icons';
 
@@ -18,6 +17,18 @@ L.Icon.Default.mergeOptions({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
 });
+
+const MapUpdater = () => {
+  const map = useMap();
+  useEffect(() => {
+    // Invalidate size after a short delay to ensure Ionic animations finish
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+};
 
 const CampusMap = () => {
   const history = useHistory();
@@ -53,15 +64,16 @@ const CampusMap = () => {
   const allReports = reportService.getReports();
 
   return (
-    <IonCard style={{ margin: 0, overflow: "hidden", height: "calc(100vh - 120px)" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
       <MapContainer 
         center={mapCenter} 
         zoom={16} 
         scrollWheelZoom={true} 
-        style={{ height: "100%", width: "100%" }}
+        style={{ flex: 1, width: "100%", zIndex: 1 }}
       >
+        <MapUpdater />
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -131,7 +143,7 @@ const CampusMap = () => {
           );
         })}
       </MapContainer>
-    </IonCard>
+    </div>
   );
 };
 

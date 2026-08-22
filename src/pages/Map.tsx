@@ -6,7 +6,7 @@ const Map: React.FC = () => {
   return (
     <IonPage>
       <PageHeader title="Mapa" />
-      <IonContent fullscreen>
+      <IonContent fullscreen scrollY={false}>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Mapa</IonTitle>
