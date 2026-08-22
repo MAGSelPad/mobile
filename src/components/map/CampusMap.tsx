@@ -51,7 +51,8 @@ const CampusMap = () => {
   const isGpsAvailable = userLocation && (userLocation.latitude !== DEFAULT_LOCATION.latitude || userLocation.longitude !== DEFAULT_LOCATION.longitude);
 
   const handleCreateReport = (placeId: number) => {
-    history.push(`/report?placeId=${placeId}`);
+    reportService.setPendingPlaceId(placeId);
+    history.push('/report');
   };
 
   const getStatusColor = (status: string) => {

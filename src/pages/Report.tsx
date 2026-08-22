@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter } from "@ionic/react";
-import { addOutline, } from "ionicons/icons";
-import { useLocation, useHistory } from "react-router-dom";
+import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonImg, IonCard, IonCardContent } from "@ionic/react";
+import { addOutline, closeOutline } from "ionicons/icons";
 
 import PageHeader from "../components/common/PageHeader";
 import SectionTitle from "../components/common/SectionTitle";
@@ -17,12 +16,11 @@ import { getCurrentLocation } from "../services/locationService";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
-  const location = useLocation();
-  const history = useHistory();
 
   const [creatingReport, setCreatingReport] = useState(false);
   const [reports, setReports] = useState<Report[]>([]);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   const [placeId, setPlaceId] = useState<number | null>(null);
   const [type, setType] = useState("");
@@ -39,14 +37,11 @@ const Report = () => {
     };
     fetchLoc();
 
-    // Check if we navigated here with a pre-selected place query param
-    const params = new URLSearchParams(location.search);
-    const pId = params.get('placeId');
-    if (pId) {
-      setPlaceId(parseInt(pId, 10));
+    // Check if we navigated here from the map with a pre-selected place
+    const pId = reportService.consumePendingPlaceId();
+    if (pId !== null) {
+      setPlaceId(pId);
       setCreatingReport(true);
-      // Clear the query parameter so it doesn't stick
-      history.replace({ pathname: '/report', search: '' });
     }
   });
 
@@ -111,7 +106,11 @@ const Report = () => {
               Nuevo reporte
             </IonButton>
 
-            <ReportList reports={reports} places={places} />
+            <ReportList 
+              reports={reports} 
+              places={places} 
+              onReportClick={(r) => setSelectedReport(r)} 
+            />
           </>
         ) : (
           <>
@@ -135,6 +134,43 @@ const Report = () => {
             </IonButton>
           </>
         )}
+
+        <IonModal isOpen={!!selectedReport} onDidDismiss={() => setSelectedReport(null)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Detalle del Reporte</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => setSelectedReport(null)}>
+                  <IonIcon icon={closeOutline} />
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            {selectedReport && (
+              <>
+                <h2 style={{ marginTop: 0, fontWeight: 'bold' }}>
+                  {places.find(p => p.id === selectedReport.placeId)?.name || "Lugar Desconocido"}
+                </h2>
+                <p><strong>Tipo:</strong> {selectedReport.type}</p>
+                <p><strong>Estado:</strong> {selectedReport.status}</p>
+                <p><strong>Fecha:</strong> {new Date(selectedReport.createdAt).toLocaleString()}</p>
+                
+                <IonCard style={{ margin: '16px 0', boxShadow: 'none', border: '1px solid var(--ion-color-light)' }}>
+                  <IonCardContent>
+                    <p style={{ margin: 0 }}>{selectedReport.description}</p>
+                  </IonCardContent>
+                </IonCard>
+
+                {selectedReport.image && (
+                  <div style={{ marginTop: '16px', borderRadius: '8px', overflow: 'hidden' }}>
+                    <IonImg src={selectedReport.image} alt="Evidencia" style={{ width: '100%', objectFit: 'contain' }} />
+                  </div>
+                )}
+              </>
+            )}
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

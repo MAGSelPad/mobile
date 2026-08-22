@@ -2,6 +2,7 @@ import { Report } from "../types/Report";
 import { storageService } from "./storageService";
 
 let memoryReports: Report[] = [];
+let pendingPlaceId: number | null = null;
 
 const REPORTS_STORAGE_KEY = 'campusreport_reports';
 const REPORT_RETENTION_DAYS = 30;
@@ -35,4 +36,14 @@ export const reportService = {
     // Guardar asíncronamente en background
     storageService.set(REPORTS_STORAGE_KEY, memoryReports);
   },
+
+  setPendingPlaceId: (id: number): void => {
+    pendingPlaceId = id;
+  },
+
+  consumePendingPlaceId: (): number | null => {
+    const id = pendingPlaceId;
+    pendingPlaceId = null;
+    return id;
+  }
 };

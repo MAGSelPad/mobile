@@ -35,16 +35,6 @@ export const places: Place[] = [
     geometryType: "Point"
   },
   {
-    id: 4,
-    name: "Comedor Celex",
-    faculty: "Comida",
-    category: "Comida",
-    latitude: -2.1471,
-    longitude: -79.9651,
-    description: "Cafetería principal del campus.",
-    geometryType: "Point"
-  },
-  {
     id: 5,
     name: "Laboratorios",
     faculty: "Laboratorio",
