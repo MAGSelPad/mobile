@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IonButton, IonContent, IonIcon, IonPage, useIonAlert, useIonViewWillEnter } from "@ionic/react";
 import { addOutline, } from "ionicons/icons";
+import { useLocation } from "react-router-dom";
 
 import PageHeader from "../components/common/PageHeader";
 import SectionTitle from "../components/common/SectionTitle";
@@ -16,10 +17,16 @@ import { getCurrentLocation } from "../services/locationService";
 
 const Report = () => {
   const [presentAlert] = useIonAlert();
+  const location = useLocation<{ preselectedPlaceId?: number }>();
 
   const [creatingReport, setCreatingReport] = useState(false);
   const [reports, setReports] = useState<Report[]>([]);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+
+  const [placeId, setPlaceId] = useState<number | null>(null);
+  const [type, setType] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState<string | null>(null);
 
   useIonViewWillEnter(() => {
     setReports(reportService.getReports());
@@ -30,12 +37,18 @@ const Report = () => {
       setUserLocation(loc);
     };
     fetchLoc();
-  });
 
-  const [placeId, setPlaceId] = useState<number | null>(null);
-  const [type, setType] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+    // Check if we navigated here from the map with a pre-selected place
+    if (location.state?.preselectedPlaceId) {
+      setPlaceId(location.state.preselectedPlaceId);
+      setCreatingReport(true);
+      
+      // Clear the state so it doesn't reopen next time we enter without the button
+      // React router history state replacement is tricky, so we just consume it.
+      // Modifying state requires useHistory, but consuming it is fine.
+      window.history.replaceState({}, '');
+    }
+  });
 
   const handleSubmit = () => {
     if (placeId === null || !type || !description.trim()) {

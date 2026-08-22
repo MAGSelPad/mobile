@@ -14,7 +14,7 @@ const NearbyPlaces = ({ userLocation }: Props) => {
             userLocation.latitude, userLocation.longitude,
             place.latitude, place.longitude
         ),
-    })).sort((a, b) => a.distance - b.distance);
+    })).sort((a, b) => a.distance - b.distance).slice(0, 5);
 
     return (
         <>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { IonButton, IonItem, IonLabel, IonTextarea, IonList, IonListHeader, IonText, IonIcon } from "@ionic/react";
+import { IonButton, IonItem, IonLabel, IonTextarea, IonList, IonListHeader, IonText, IonIcon, IonAccordionGroup, IonAccordion } from "@ionic/react";
 import { checkmarkCircle } from "ionicons/icons";
 
 import { Place } from "../../types/Place";
@@ -42,9 +42,10 @@ const ReportForm = ({
 
   const isGpsAvailable = userLocation && (userLocation.latitude !== DEFAULT_LOCATION.latitude || userLocation.longitude !== DEFAULT_LOCATION.longitude);
 
-  const placesWithDistance = useMemo(() => {
+  const placesWithDistance = useMemo<{ place: Place; distance: number | null }[]>(() => {
       if (!isGpsAvailable) {
-          return places.map(p => ({ place: p, distance: null }));
+          // Si no hay GPS, simplemente ordenamos alfabéticamente
+          return places.map(p => ({ place: p, distance: null })).sort((a, b) => a.place.name.localeCompare(b.place.name));
       }
       return places.map(p => ({
           place: p,
@@ -52,32 +53,75 @@ const ReportForm = ({
       })).sort((a, b) => a.distance! - b.distance!);
   }, [places, userLocation, isGpsAvailable]);
 
-  const displayedPlaces = showAllPlaces ? placesWithDistance : placesWithDistance.slice(0, 3);
+  const groupedPlaces = useMemo(() => {
+      const groups: Record<string, typeof placesWithDistance> = {};
+      placesWithDistance.forEach(pwd => {
+          const faculty = pwd.place.faculty || 'Desconocida';
+          if (!groups[faculty]) groups[faculty] = [];
+          groups[faculty].push(pwd);
+      });
+      return groups;
+  }, [placesWithDistance]);
 
   return (
     <>
-      <IonListHeader>📍 {isGpsAvailable ? 'Lugares cercanos' : 'Lugares'}</IonListHeader>
-      <IonList>
-        {displayedPlaces.map(({ place, distance }) => (
-          <IonItem 
-            key={place.id} 
-            button 
-            onClick={() => onPlaceChange(place.id)}
-            color={placeId === place.id ? "light" : undefined}
-          >
-            <IonLabel>
-              <h2>{place.name}</h2>
-            </IonLabel>
-            {distance !== null && <IonText slot="end">{distance} m</IonText>}
-            {placeId === place.id && <IonIcon icon={checkmarkCircle} slot="end" color="primary" />}
-          </IonItem>
-        ))}
-      </IonList>
-      
-      {!showAllPlaces && placesWithDistance.length > 3 && (
-        <IonButton fill="clear" onClick={() => setShowAllPlaces(true)}>
-          Ver todos los lugares
-        </IonButton>
+      {!showAllPlaces ? (
+        <>
+          <IonListHeader>📍 {isGpsAvailable ? 'Lugares cercanos' : 'Lugares recomendados'}</IonListHeader>
+          <IonList>
+            {placesWithDistance.slice(0, 3).map(({ place, distance }) => (
+              <IonItem 
+                key={place.id} 
+                button 
+                onClick={() => onPlaceChange(place.id)}
+                color={placeId === place.id ? "light" : undefined}
+              >
+                <IonLabel>
+                  <h2>{place.name}</h2>
+                  {place.faculty && <p>{place.faculty}</p>}
+                </IonLabel>
+                {distance !== null && <IonText slot="end">{distance} m</IonText>}
+                {placeId === place.id && <IonIcon icon={checkmarkCircle} slot="end" color="primary" />}
+              </IonItem>
+            ))}
+          </IonList>
+          
+          <IonButton fill="clear" onClick={() => setShowAllPlaces(true)}>
+            Ver todos los lugares
+          </IonButton>
+        </>
+      ) : (
+        <>
+          <IonListHeader>📍 Todos los lugares</IonListHeader>
+          <IonAccordionGroup>
+            {Object.entries(groupedPlaces).sort(([a], [b]) => a.localeCompare(b)).map(([faculty, pwdList]) => (
+              <IonAccordion value={faculty} key={faculty}>
+                <IonItem slot="header" color="light">
+                  <IonLabel>{faculty}</IonLabel>
+                </IonItem>
+                <IonList slot="content">
+                  {pwdList.map(({ place, distance }) => (
+                    <IonItem 
+                      key={place.id} 
+                      button 
+                      onClick={() => onPlaceChange(place.id)}
+                      color={placeId === place.id ? "light" : undefined}
+                    >
+                      <IonLabel>
+                        <h2>{place.name}</h2>
+                      </IonLabel>
+                      {distance !== null && <IonText slot="end">{distance} m</IonText>}
+                      {placeId === place.id && <IonIcon icon={checkmarkCircle} slot="end" color="primary" />}
+                    </IonItem>
+                  ))}
+                </IonList>
+              </IonAccordion>
+            ))}
+          </IonAccordionGroup>
+          <IonButton fill="clear" onClick={() => setShowAllPlaces(false)}>
+            Ocultar lista completa
+          </IonButton>
+        </>
       )}
 
       <ReportTypeSelect value={type} onChange={onTypeChange} />
